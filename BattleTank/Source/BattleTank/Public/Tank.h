@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "TankAimingComponent.h"
 #include "Tank.generated.h"
 
 UCLASS()
@@ -30,5 +31,16 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	
+    UFUNCTION(BlueprintCallable)
+    void SetBarrel(UStaticMeshComponent* BarrelToSet);
+
+private:
+
+protected:
+    UTankAimingComponent* TankAimingComponent = nullptr;
+
+public:
+    UPROPERTY(EditAnywhere)
+    float BulletLunchSpeed = 1000;
 	
 };
