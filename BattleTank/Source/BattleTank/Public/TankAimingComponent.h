@@ -7,6 +7,7 @@
 #include "TankAimingComponent.generated.h"
 
 class UTankBarrel;
+class UTankTurretComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimingComponent : public UActorComponent
@@ -30,10 +31,11 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-    UFUNCTION(BlueprintCallable)
     void SetBarrel(UTankBarrel* TankBarrelToSet);
+    void SetTurret(UTankTurretComponent* TankTurretToSet);
 
 private:
     UTankBarrel* TankBarrel = nullptr;
+    UTankTurretComponent* TankTurret = nullptr;
 
 };

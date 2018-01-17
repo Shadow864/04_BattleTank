@@ -2,6 +2,7 @@
 
 #include "Tank.h"
 #include "TankBarrel.h"
+#include "TankTurretComponent.h"
 
 // Sets default values
 ATank::ATank()
@@ -26,7 +27,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void ATank::SetBarrel(UTankBarrel*  BarrelToSet)
+void ATank::SetBarrel(UTankBarrel* BarrelToSet) const
 {
     if (!TankAimingComponent)
         return;
@@ -34,3 +35,10 @@ void ATank::SetBarrel(UTankBarrel*  BarrelToSet)
     TankAimingComponent->SetBarrel(BarrelToSet);
 }
 
+void ATank::SetTurret(UTankTurretComponent* TurretToSet) const
+{
+    if (!TankAimingComponent)
+        return;
+
+    TankAimingComponent->SetTurret(TurretToSet);
+}
