@@ -23,7 +23,7 @@ void UTankAimingComponent::AimAt(const FVector& HitLocation, float LunchSpeed)
     if (!TankBarrel) return;
 
     auto TankName = GetOwner()->GetName();
-    auto StartLocation = TankBarrel->GetSocketLocation(FName("Projectille"));
+    auto StartLocation = TankBarrel->GetSocketLocation(FName("Projectile"));
     FVector OutVelocity;
 
     bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity(
