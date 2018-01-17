@@ -36,6 +36,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetTurret(UTankTurretComponent* TurretToSet) const;
 
+    UFUNCTION(BlueprintCallable)
+    void Fire();
+
 private:
 
 protected:
