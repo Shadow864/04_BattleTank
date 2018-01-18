@@ -54,5 +54,10 @@ private:
 
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AProjectile> ProjectileBlueprint;
+
+    UPROPERTY(EditDefaultsOnly)
+    float ReloadTimeInSeconds = 3.f;
 	
+
+    double LastFireTime = 0;
 };

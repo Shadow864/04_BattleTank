@@ -50,10 +50,17 @@ void ATank::Fire()
     if (!TankBarrel)
         return;
 
+    bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+    
+    if (!isReloaded)
+        return;
+
     FVector ProjectileLocation = TankBarrel->GetSocketLocation(FName("Projectile"));
     FRotator ProjectileRotation = TankBarrel->GetSocketRotation(FName("Projectile"));
     
     AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, ProjectileLocation, ProjectileRotation);
     
     Projectile->Lunch(BulletLunchSpeed);
+
+    LastFireTime = FPlatformTime::Seconds();
 }
