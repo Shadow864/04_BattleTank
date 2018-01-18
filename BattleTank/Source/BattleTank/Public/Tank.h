@@ -49,10 +49,10 @@ private:
 
     UTankBarrel* TankBarrel;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditDefaultsOnly)
     float BulletLunchSpeed = 4000;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AProjectile> ProjectileBlueprint;
 	
 };
