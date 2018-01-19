@@ -14,7 +14,7 @@ class BATTLETANK_API UTankTrackComponent : public UStaticMeshComponent
 {
     GENERATED_BODY()
 
-
+public:
     UFUNCTION(BlueprintCallable)
     void SetThrottle(float Throttle);
 	
