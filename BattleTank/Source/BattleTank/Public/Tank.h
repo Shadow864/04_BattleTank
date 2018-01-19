@@ -51,7 +51,6 @@ public:
     UTankMovementComponent* MovementComponent = nullptr;
 
 private:
-
     UTankBarrel* TankBarrel; 
 
     UPROPERTY(EditDefaultsOnly)
@@ -63,6 +62,5 @@ private:
     UPROPERTY(EditDefaultsOnly)
     float ReloadTimeInSeconds = 3.f;
 	
-
     double LastFireTime = 0;
 };
