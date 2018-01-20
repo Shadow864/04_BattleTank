@@ -3,15 +3,13 @@
 #include "TankPlayerController.h"
 #include <CollisionQueryParams.h>
 #include "TankAimingComponent.h"
-#include "Tank.h"
 
 void ATankPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    ATank* Tank = GetControlledTank();
-    UTankAimingComponent* AimingComponent = Tank->FindComponentByClass<UTankAimingComponent>();
-    
+    UTankAimingComponent* AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+    ensure(AimingComponent);
     OnAimingComponentAdded(AimingComponent);
 }
 
@@ -22,21 +20,18 @@ void ATankPlayerController::Tick(float DeltaTime)
     AimTowardsCrosshair();
 }
 
-ATank* ATankPlayerController::GetControlledTank() const
-{
-    return Cast<ATank>(GetPawn());
-}
-
 void ATankPlayerController::AimTowardsCrosshair()
 {
-    if (!GetControlledTank())
+    UTankAimingComponent* AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+
+    if (!ensure(AimingComponent))
         return;
 
     FVector HitResult;
     
     if (GetSightRayHitLocation(HitResult))
     {
-        GetControlledTank()->AimAt(HitResult);
+        AimingComponent->AimAt(HitResult);
     }
 }
 

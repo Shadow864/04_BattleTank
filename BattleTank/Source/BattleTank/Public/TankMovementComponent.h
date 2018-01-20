@@ -11,13 +11,13 @@ class UTankTrackComponent;
 /**
  * 
  */
-UCLASS()
+UCLASS( ClassGroup=(Custom),  meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 {
     GENERATED_BODY()
 
    UFUNCTION(BlueprintCallable)
-   void SetTankTracks(UTankTrackComponent* LeftTrack, UTankTrackComponent* RightTrack);
+   void Initialize(UTankTrackComponent* LeftTrack, UTankTrackComponent* RightTrack);
 
     UFUNCTION(BlueprintCallable)
     void IntendMoveForeward(float Throw);
@@ -27,7 +27,6 @@ class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 
 public:
     void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
-
 
 private:
     UTankTrackComponent* LeftTrack = nullptr;

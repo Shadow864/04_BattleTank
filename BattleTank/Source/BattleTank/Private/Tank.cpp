@@ -1,68 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
-#include "Projectile.h"
-#include "TankBarrel.h"
-#include "TankTurretComponent.h"
-#include "TankMovementComponent.h"
 
 // Sets default values
 ATank::ATank()
 {
-    TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
-    MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("Movement Component"));
+  
 }  
-
-void ATank::AimAt(const FVector& HitLocation)
-{
-    TankAimingComponent->AimAt(HitLocation, BulletLunchSpeed);
-}
-
-// Called when the game starts or when spawned
-void ATank::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-// Called to bind functionality to input
-void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void ATank::SetBarrel(UTankBarrel* BarrelToSet)
-{
-    if (!TankAimingComponent)
-        return;
-
-    TankAimingComponent->SetBarrel(BarrelToSet);
-    TankBarrel = BarrelToSet;
-}
-
-void ATank::SetTurret(UTankTurretComponent* TurretToSet) const
-{
-    if (!TankAimingComponent)
-        return;
-
-    TankAimingComponent->SetTurret(TurretToSet);
-}
-
-void ATank::Fire()
-{
-    if (!TankBarrel)
-        return;
-
-    bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-    
-    if (!isReloaded)
-        return;
-
-    FVector ProjectileLocation = TankBarrel->GetSocketLocation(FName("Projectile"));
-    FRotator ProjectileRotation = TankBarrel->GetSocketRotation(FName("Projectile"));
-    
-    AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, ProjectileLocation, ProjectileRotation);
-    
-    Projectile->Lunch(BulletLunchSpeed);
-
-    LastFireTime = FPlatformTime::Seconds();
-}

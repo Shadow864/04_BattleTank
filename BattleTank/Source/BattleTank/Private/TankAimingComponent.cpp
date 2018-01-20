@@ -6,21 +6,22 @@
 #include "DrawDebugHelpers.h"
 #include "TankBarrel.h"
 #include "TankTurretComponent.h"
+#include "Projectile.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
 
-
-void UTankAimingComponent::AimAt(const FVector& HitLocation, float LunchSpeed)
+void UTankAimingComponent::AimAt(const FVector& HitLocation)
 {
-    if (!TankBarrel) return;
+    if (!ensure(TankBarrel)) 
+        return;
 
     auto TankName = GetOwner()->GetName();
     auto StartLocation = TankBarrel->GetSocketLocation(FName("Projectile"));
@@ -31,7 +32,7 @@ void UTankAimingComponent::AimAt(const FVector& HitLocation, float LunchSpeed)
         OutVelocity,
         StartLocation,
         HitLocation,
-        LunchSpeed,
+        BulletLunchSpeed,
         false,
         0,
         0,
@@ -52,40 +53,41 @@ void UTankAimingComponent::AimAt(const FVector& HitLocation, float LunchSpeed)
     }
 }
 
-// Called when the game starts
-void UTankAimingComponent::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-// Called every frame
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
-void UTankAimingComponent::SetBarrel(UTankBarrel* TankBarrelToSet)
-{
-    TankBarrel = TankBarrelToSet;
-}
-
-void UTankAimingComponent::SetTurret(UTankTurretComponent* TankTurretToSet)
-{
-    TankTurret = TankTurretToSet;
-}
-
 void UTankAimingComponent::MoveBarrelTowards(const FVector& AimDirection) const
 {
+    if (!ensure(TankBarrel && TankTurret))
+        return;
+
     FRotator BarrelRotator = TankBarrel->GetForwardVector().Rotation();
     FRotator AimAsRotatior = AimDirection.Rotation();
     FRotator DeltaRotation = AimAsRotatior - BarrelRotator;
     
-    if (TankBarrel)
-        TankBarrel->Elevate(DeltaRotation.Pitch);
+    TankBarrel->Elevate(DeltaRotation.Pitch);
+    TankTurret->Rotate(DeltaRotation.Yaw);
+}
 
-    if (TankTurret)
-        TankTurret->Rotate(DeltaRotation.Yaw);
+void UTankAimingComponent::Initialize(UTankBarrel* TankBarrel, UTankTurretComponent* TankTurret)
+{
+   this->TankBarrel = TankBarrel;
+   this->TankTurret = TankTurret;
+}
 
+void UTankAimingComponent::Fire()
+{
+    if (!ensure(TankBarrel && ProjectileBlueprint))
+        return;
+
+    bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+
+    if (!isReloaded)
+        return;
+
+    FVector ProjectileLocation = TankBarrel->GetSocketLocation(FName("Projectile"));
+    FRotator ProjectileRotation = TankBarrel->GetSocketRotation(FName("Projectile"));
+
+    AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, ProjectileLocation, ProjectileRotation);
+
+    Projectile->Lunch(BulletLunchSpeed);
+
+    LastFireTime = FPlatformTime::Seconds();
 }

@@ -7,7 +7,6 @@
 #include "TankPlayerController.generated.h"
 
 class UTankAimingComponent;
-class ATank;
 /**
  * 
  */
@@ -22,8 +21,6 @@ private:
 
     UPROPERTY(EditAnywhere)
     float CrossHairYLocation = 0.33333f;
-
-    ATank* GetControlledTank() const;
 
     virtual void BeginPlay() override;
     
