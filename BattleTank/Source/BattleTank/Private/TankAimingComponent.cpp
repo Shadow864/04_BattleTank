@@ -13,13 +13,52 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
 }
 
+void UTankAimingComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    LastFireTime = FPlatformTime::Seconds();
+}
+
+void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
+{
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+    if (IsReloading())
+    {
+        FiringStatus = EFiringStatus::Reloading;
+    }
+    else if(IsBarrelMoving())
+    {
+        FiringStatus = EFiringStatus::Aiming;
+    }
+    else
+    {
+        FiringStatus = EFiringStatus::Locked;
+    }
+}
+
+bool UTankAimingComponent::IsReloading() const
+{
+    return (FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds;
+}
+
+bool UTankAimingComponent::IsBarrelMoving() const
+{
+    if (!ensure(TankBarrel))
+        return false;
+
+    return !AimDirection.Equals(TankBarrel->GetForwardVector(), 0.01);
+}
+
 void UTankAimingComponent::AimAt(const FVector& HitLocation)
 {
+    
     if (!ensure(TankBarrel)) 
         return;
 
@@ -53,8 +92,10 @@ void UTankAimingComponent::AimAt(const FVector& HitLocation)
     }
 }
 
-void UTankAimingComponent::MoveBarrelTowards(const FVector& AimDirection) const
+void UTankAimingComponent::MoveBarrelTowards(const FVector& AimDirection)
 {
+    this->AimDirection = AimDirection;
+
     if (!ensure(TankBarrel && TankTurret))
         return;
 
@@ -77,9 +118,8 @@ void UTankAimingComponent::Fire()
     if (!ensure(TankBarrel && ProjectileBlueprint))
         return;
 
-    bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-
-    if (!isReloaded)
+   
+    if (FiringStatus == EFiringStatus::Reloading)
         return;
 
     FVector ProjectileLocation = TankBarrel->GetSocketLocation(FName("Projectile"));
