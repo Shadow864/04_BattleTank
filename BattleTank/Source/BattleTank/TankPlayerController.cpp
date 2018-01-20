@@ -2,22 +2,17 @@
 
 #include "TankPlayerController.h"
 #include <CollisionQueryParams.h>
-
+#include "TankAimingComponent.h"
+#include "Tank.h"
 
 void ATankPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    auto tank = GetControlledTank();
-
-    if (!tank)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Tank not controlled"), *tank->GetName());
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("%s"), *tank->GetName());
-    }
+    ATank* Tank = GetControlledTank();
+    UTankAimingComponent* AimingComponent = Tank->FindComponentByClass<UTankAimingComponent>();
+    
+    OnAimingComponentAdded(AimingComponent);
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -51,7 +46,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
     GetViewportSize(ViewportSizeX, ViewportSizeY);
     auto CrosshairScreenPosition = FVector2D(ViewportSizeX * CrossHairXLocation, ViewportSizeY * CrossHairYLocation);
     
-        FVector LookDirection;
+    FVector LookDirection;
 
     if (GetLookDirection(CrosshairScreenPosition, LookDirection))
     {
@@ -63,7 +58,6 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 
 bool ATankPlayerController::GetLookVectorHitLocation(const FVector& LookDirection, FVector& HitLocation) const
 {
-
     FVector TraceStart = PlayerCameraManager->GetCameraLocation();
     FVector TraceEnd = TraceStart + LookDirection * 10000000;
 

@@ -11,7 +11,7 @@ ATank::ATank()
 {
     TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
     MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("Movement Component"));
-}
+}  
 
 void ATank::AimAt(const FVector& HitLocation)
 {

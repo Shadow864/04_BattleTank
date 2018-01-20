@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "Public/Tank.h"
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
+class UTankAimingComponent;
+class ATank;
 /**
  * 
  */
@@ -15,7 +16,7 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 {
     GENERATED_BODY()
 
-
+private:
     UPROPERTY(EditAnywhere)
     float CrossHairXLocation = 0.5f;
 
@@ -36,4 +37,8 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
     bool GetLookDirection(const FVector2D& ScreenLocation, FVector& LookDirection) const;
 
     bool GetLookVectorHitLocation(const FVector& LookDirection, FVector& HitLocation) const;
+
+public:
+    UFUNCTION(BlueprintImplementableEvent)
+    void OnAimingComponentAdded(UTankAimingComponent* AimingComponent);
 };
