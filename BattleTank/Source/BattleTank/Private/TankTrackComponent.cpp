@@ -23,6 +23,8 @@ void UTankTrackComponent::ApplySidewayForce()
 
     // F = m * a (but we have two tracks thats why divede by 2)
     FVector CorectionForce = CorectionAccelertion * TankRoot->GetMass() * 0.5f;
+
+    TankRoot->AddForce(CorectionForce);
 }
 
 void UTankTrackComponent::SetThrottle(float Throttle)
@@ -32,8 +34,6 @@ void UTankTrackComponent::SetThrottle(float Throttle)
 
 void UTankTrackComponent::DriveTrack()
 {
-    UE_LOG(LogTemp, Warning, TEXT("[%s] Throttle %f"), *GetName(), CurrentThrottle);
-
     auto ForceLocation = GetComponentLocation();
     auto Force = GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce;
     auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
