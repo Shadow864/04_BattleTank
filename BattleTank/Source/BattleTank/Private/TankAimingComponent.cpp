@@ -103,8 +103,8 @@ void UTankAimingComponent::MoveBarrelTowards(const FVector& AimDirection)
     FRotator AimAsRotatior = AimDirection.Rotation();
     FRotator DeltaRotation = AimAsRotatior - BarrelRotator;
     
-    TankBarrel->Elevate(DeltaRotation.Pitch);
-    TankTurret->Rotate(DeltaRotation.Yaw);
+    TankBarrel->Elevate(DeltaRotation.GetNormalized().Pitch);
+    TankTurret->Rotate(DeltaRotation.GetNormalized().Yaw);
 }
 
 void UTankAimingComponent::Initialize(UTankBarrel* TankBarrel, UTankTurretComponent* TankTurret)
@@ -118,7 +118,6 @@ void UTankAimingComponent::Fire()
     if (!ensure(TankBarrel && ProjectileBlueprint))
         return;
 
-   
     if (FiringStatus == EFiringStatus::Reloading)
         return;
 
