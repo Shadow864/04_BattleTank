@@ -39,7 +39,6 @@ void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool
     auto SteeringMagnitude = CrossProduct.Size();
     auto ZSign = FMath::Abs(CrossProduct.Z) / CrossProduct.Z;
     auto RightThrow = SteeringMagnitude * ZSign;
-    UE_LOG(LogTemp, Warning, TEXT("RighThrow %f"), RightThrow);
 
     IntendMoveRight(RightThrow);
 }

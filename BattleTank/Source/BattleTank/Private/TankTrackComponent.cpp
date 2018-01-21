@@ -3,33 +3,48 @@
 #include "TankTrackComponent.h"
 #include <Components/ActorComponent.h>
 #include <Components/PrimitiveComponent.h>
+#include <DrawDebugHelpers.h>
 
 
 UTankTrackComponent::UTankTrackComponent()
 {
-    PrimaryComponentTick.bCanEverTick = true;
+    PrimaryComponentTick.bCanEverTick = false;
+    OnComponentHit.AddDynamic(this, &UTankTrackComponent::OnHit);
 }
 
-void UTankTrackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
+void UTankTrackComponent::ApplySidewayForce()
 {
+    float DeltaTime = GetWorld()->GetDeltaSeconds();
     auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
 
-    float SlippageSpeed = FVector::DotProduct(GetRightVector(), GetOwner()->GetVelocity());
+    float SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
 
     FVector CorectionAccelertion = (-SlippageSpeed / DeltaTime) * GetRightVector();
 
     // F = m * a (but we have two tracks thats why divede by 2)
-    FVector CorectionForce = CorectionAccelertion * TankRoot->GetMass() / 2.f;
-
-    TankRoot->AddForce(CorectionForce);
+    FVector CorectionForce = CorectionAccelertion * TankRoot->GetMass() * 0.5f;
 }
-
 
 void UTankTrackComponent::SetThrottle(float Throttle)
 {
+    CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -2.f, 2.f);
+}
+
+void UTankTrackComponent::DriveTrack()
+{
+    UE_LOG(LogTemp, Warning, TEXT("[%s] Throttle %f"), *GetName(), CurrentThrottle);
+
     auto ForceLocation = GetComponentLocation();
-    auto Force = GetForwardVector() * Throttle * TrackMaxDrivingForce;
+    auto Force = GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce;
     auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
 
     TankRoot->AddForceAtLocation(Force, ForceLocation);
+}
+
+void UTankTrackComponent::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+    DriveTrack();
+    ApplySidewayForce();
+    CurrentThrottle = 0.f;
+
 }
