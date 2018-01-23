@@ -48,6 +48,8 @@ public:
     UFUNCTION(BlueprintCallable)
     void Fire();
 
+    EFiringStatus GetFiringStatus() const;
+
 private:
     UTankBarrel* TankBarrel = nullptr;
     UTankTurretComponent* TankTurret = nullptr;

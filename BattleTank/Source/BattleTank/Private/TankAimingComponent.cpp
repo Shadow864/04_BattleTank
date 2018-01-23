@@ -113,6 +113,11 @@ void UTankAimingComponent::Initialize(UTankBarrel* TankBarrel, UTankTurretCompon
    this->TankTurret = TankTurret;
 }
 
+EFiringStatus UTankAimingComponent::GetFiringStatus() const
+{
+    return FiringStatus;
+}
+
 void UTankAimingComponent::Fire()
 {
     if (!ensure(TankBarrel && ProjectileBlueprint))
