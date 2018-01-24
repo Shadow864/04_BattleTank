@@ -29,7 +29,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-    if (IsReloading())
+    if (IsOutOfAmmo())
+    {
+        FiringStatus = EFiringStatus::OutOfAmmo;
+    }
+    else if (IsReloading())
     {
         FiringStatus = EFiringStatus::Reloading;
     }
@@ -41,6 +45,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
     {
         FiringStatus = EFiringStatus::Locked;
     }
+}
+
+bool UTankAimingComponent::IsOutOfAmmo() const
+{
+    return NumberOfRockets == 0;
 }
 
 bool UTankAimingComponent::IsReloading() const
@@ -134,4 +143,6 @@ void UTankAimingComponent::Fire()
     Projectile->Lunch(BulletLunchSpeed);
 
     LastFireTime = FPlatformTime::Seconds();
+    
+    NumberOfRockets--;
 }

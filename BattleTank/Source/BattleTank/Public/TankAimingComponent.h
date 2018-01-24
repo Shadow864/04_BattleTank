@@ -15,7 +15,8 @@ enum class EFiringStatus : uint8
 {
     Locked,
     Aiming,
-    Reloading
+    Reloading,
+    OutOfAmmo
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -40,6 +41,8 @@ private:
     bool IsReloading() const;
   
     bool IsBarrelMoving() const;
+
+    bool IsOutOfAmmo() const;
 
 public:	
     UFUNCTION(BlueprintCallable)
@@ -68,6 +71,9 @@ public:
     UPROPERTY(EditDefaultsOnly)
     float ReloadTimeInSeconds = 3.f;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    float NumberOfRockets= 3;
+    
     double LastFireTime = 0;
 
 };
