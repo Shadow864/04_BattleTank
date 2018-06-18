@@ -132,7 +132,7 @@ void UTankAimingComponent::Fire()
     if (!ensure(TankBarrel && ProjectileBlueprint))
         return;
 
-    if (FiringStatus == EFiringStatus::Reloading)
+    if (FiringStatus == EFiringStatus::Reloading || FiringStatus == EFiringStatus::OutOfAmmo)
         return;
 
     FVector ProjectileLocation = TankBarrel->GetSocketLocation(FName("Projectile"));
