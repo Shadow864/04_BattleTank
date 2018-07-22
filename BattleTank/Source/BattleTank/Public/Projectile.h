@@ -32,9 +32,15 @@ public:
 private:
     UProjectileMovementComponent* ProjectileMovement = nullptr;
     
-    UPROPERTY(VisibleAnywhere, Category = "Component")
+    UPROPERTY(VisibleAnywhere,   Category = "Component")
     UStaticMeshComponent* CollisionMesh = nullptr;
 
     UPROPERTY(VisibleAnywhere, Category = "Component")
     UParticleSystemComponent* LaunchBlast = nullptr;
+
+    UPROPERTY(VisibleAnywhere, Category = "Component")
+    UParticleSystemComponent* ImpactBlast = nullptr;
+
+    UFUNCTION()
+    void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

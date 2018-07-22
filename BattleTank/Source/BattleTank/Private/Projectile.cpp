@@ -20,9 +20,14 @@ AProjectile::AProjectile()
     SetRootComponent(CollisionMesh);
     CollisionMesh->SetNotifyRigidBodyCollision(true);
     CollisionMesh->SetVisibility(true);
+    CollisionMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 
     LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Launch Blast"));
     LaunchBlast->AttachToComponent(CollisionMesh, FAttachmentTransformRules::KeepRelativeTransform);
+
+    ImpactBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Impact Blast"));
+    ImpactBlast->AttachToComponent(CollisionMesh, FAttachmentTransformRules::KeepRelativeTransform);
+    ImpactBlast->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -41,4 +46,16 @@ void AProjectile::Lunch(float Speed)
 {
     ProjectileMovement->SetVelocityInLocalSpace(FVector::ForwardVector * Speed);
     ProjectileMovement->Activate();
+}
+
+
+void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+    if (LaunchBlast)
+        LaunchBlast->Deactivate();
+
+    if (ImpactBlast)
+        ImpactBlast->Activate();
+
+    CollisionMesh->SetVisibility(false);
 }
