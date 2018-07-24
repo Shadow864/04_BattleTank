@@ -57,5 +57,6 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
     if (ImpactBlast)
         ImpactBlast->Activate();
 
+    CollisionMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     CollisionMesh->SetVisibility(false);
 }
