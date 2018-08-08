@@ -8,6 +8,7 @@
 #include <GameFramework/Actor.h>
 #include <Engine/World.h>
 #include <TimerManager.h>
+#include <Kismet/GameplayStatics.h>
 
 
 // Sets default values
@@ -67,8 +68,10 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 
     ExplosionComponent->FireImpulse();
 
-    FTimerHandle DestroyTimer;
+    TArray<AActor*> IgnoreActors;
+    UGameplayStatics::ApplyRadialDamage(this, Damage, GetActorLocation(), ExplosionComponent->Radius, UDamageType::StaticClass(), IgnoreActors);
 
+    FTimerHandle DestroyTimer;
     GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &AProjectile::DestroyDelay, DestroyDelayDuration, false);
 }
 
