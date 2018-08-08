@@ -23,9 +23,10 @@ public:
     UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 
 protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    UHealthComponent* HealthComponent = nullptr;
 
 private:
 
-    UPROPERTY(VisibleAnywhere)
-    UHealthComponent* HealthComponent = nullptr;
+   
 };
