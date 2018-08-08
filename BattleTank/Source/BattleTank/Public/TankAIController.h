@@ -20,5 +20,13 @@ private:
     UPROPERTY(EditDefaultsOnly)
     float AcceptanceRadius = 8000.f;
 
+
+protected:
+    virtual void Possess(APawn* InPawn) override;
+
+
+    UFUNCTION()
+    void OnTankDestroyed();
+
 public:
 };

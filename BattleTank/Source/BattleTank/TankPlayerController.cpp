@@ -3,6 +3,8 @@
 #include "TankPlayerController.h"
 #include <CollisionQueryParams.h>
 #include "TankAimingComponent.h"
+#include "Tank.h"
+#include "HealthComponent.h"
 
 void ATankPlayerController::BeginPlay()
 {
@@ -78,4 +80,21 @@ bool ATankPlayerController::GetLookDirection(const FVector2D& ScreenLocation, FV
 {
     FVector CameraWordLocation;
     return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CameraWordLocation, LookDirection);
+}
+
+
+void ATankPlayerController::Possess(APawn* InPawn)
+{
+    Super::Possess(InPawn);
+    
+    ATank* Tank = Cast<ATank>(InPawn);
+
+    if (ensure(Tank != nullptr))
+        Tank->GetHealthComponent()->OnDie.AddUniqueDynamic(this, &ATankPlayerController::OnTankDestroyed);
+
+}
+
+void ATankPlayerController::OnTankDestroyed()
+{
+    UE_LOG(LogTemp, Warning, TEXT("OnTankDestroyed"))
 }

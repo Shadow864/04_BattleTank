@@ -3,6 +3,8 @@
 
 #include "TankAIController.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
+#include "HealthComponent.h"
 
 void ATankAIController::Tick(float DeltaTime)
 {
@@ -27,4 +29,21 @@ void ATankAIController::Tick(float DeltaTime)
     MoveToActor(PlayerTank, AcceptanceRadius);
     
 }
+
+void ATankAIController::Possess(APawn* InPawn)
+{
+    Super::Possess(InPawn);
+
+    ATank* Tank = Cast<ATank>(InPawn);
+
+    if (ensure(Tank != nullptr))
+        Tank->GetHealthComponent()->OnDie.AddUniqueDynamic(this, &ATankAIController::OnTankDestroyed);
+
+}
+
+void ATankAIController::OnTankDestroyed()
+{
+    UE_LOG(LogTemp, Warning, TEXT("OnTankDestroyed"))
+}
+
 

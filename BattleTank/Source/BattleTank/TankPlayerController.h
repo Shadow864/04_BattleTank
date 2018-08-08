@@ -35,6 +35,10 @@ private:
 
     bool GetLookVectorHitLocation(const FVector& LookDirection, FVector& HitLocation) const;
 
+    virtual void Possess(APawn* InPawn) override;
+
+    UFUNCTION()
+    void OnTankDestroyed();
 public:
     UFUNCTION(BlueprintImplementableEvent)
     void OnAimingComponentAdded(UTankAimingComponent* AimingComponent);
