@@ -96,5 +96,7 @@ void ATankPlayerController::Possess(APawn* InPawn)
 
 void ATankPlayerController::OnTankDestroyed()
 {
+    StartSpectatingOnly();
+
     UE_LOG(LogTemp, Warning, TEXT("OnTankDestroyed"))
 }
