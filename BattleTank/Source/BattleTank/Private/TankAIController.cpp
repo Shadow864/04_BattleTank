@@ -11,9 +11,13 @@ void ATankAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     AActor* PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
+    
+    if (!PlayerTank)
+        return;
+    
     AActor* ControlledTank = GetPawn();
 
-    if (!ensure(PlayerTank && ControlledTank))
+    if (!ensure(ControlledTank))
         return;
 
     UTankAimingComponent* AimComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
@@ -37,13 +41,15 @@ void ATankAIController::Possess(APawn* InPawn)
     ATank* Tank = Cast<ATank>(InPawn);
 
     if (ensure(Tank != nullptr))
-        Tank->GetHealthComponent()->OnDie.AddUniqueDynamic(this, &ATankAIController::OnTankDestroyed);
+        Tank->GetHealthComponent()->OnDie.AddUniqueDynamic(this, &ATankAIController::OnPossessedTankDestroyed);
 
 }
 
-void ATankAIController::OnTankDestroyed()
+void ATankAIController::OnPossessedTankDestroyed()
 {
-    UE_LOG(LogTemp, Warning, TEXT("OnTankDestroyed"))
+    if (!ensure(GetPawn())) { return; }
+
+    GetPawn()->DetachFromControllerPendingDestroy();
 }
 
 
