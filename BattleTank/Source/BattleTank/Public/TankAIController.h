@@ -26,7 +26,7 @@ protected:
 
 
     UFUNCTION()
-    void OnTankDestroyed();
+    void OnPossessedTankDestroyed();
 
 public:
 };
