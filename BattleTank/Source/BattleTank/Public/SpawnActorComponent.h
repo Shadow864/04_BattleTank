@@ -1,0 +1,27 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Components/SceneComponent.h"
+#include "SpawnActorComponent.generated.h"
+
+
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class BATTLETANK_API USpawnActorComponent : public USceneComponent
+{
+	GENERATED_BODY()
+
+public:	
+	// Sets default values for this component's properties
+	USpawnActorComponent();
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+
+public:	
+    UPROPERTY(EditDefaultsOnly, Category = "Components")
+    TSubclassOf<AActor> ActorClass;
+	
+};
