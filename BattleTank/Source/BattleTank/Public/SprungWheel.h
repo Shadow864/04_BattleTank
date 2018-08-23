@@ -8,6 +8,8 @@
 
 class UStaticMeshComponent;
 class UPhysicsConstraintComponent;
+class USphereComponent;
+
 UCLASS()
 class BATTLETANK_API ASprungWheel : public AActor
 {
@@ -27,9 +29,16 @@ public:
 
 public:
     UPROPERTY(VisibleAnywhere, Category = "Components")
-    UStaticMeshComponent* Wheel = nullptr;
+     USphereComponent* Axle = nullptr;
 
     UPROPERTY(VisibleAnywhere, Category = "Components")
-    UPhysicsConstraintComponent* Spring = nullptr;
+    USphereComponent* Wheel2 = nullptr;
+    
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UPhysicsConstraintComponent* AxleWheelConstraint = nullptr;
+    
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UPhysicsConstraintComponent* SpringConstraint = nullptr;
+
 
 };

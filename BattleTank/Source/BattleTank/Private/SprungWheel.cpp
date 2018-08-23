@@ -3,6 +3,7 @@
 #include "SprungWheel.h"
 #include <Components/StaticMeshComponent.h>
 #include <PhysicsEngine/PhysicsConstraintComponent.h>
+#include <Components/SphereComponent.h>
 
 
 // Sets default values
@@ -11,17 +12,17 @@ ASprungWheel::ASprungWheel()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
     
-    Spring = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("Spring Component"));
-    SetRootComponent(Spring);
+    SpringConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("Spring Component"));
+    SetRootComponent(SpringConstraint);
 
-    Wheel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wheel Component"));
-    Wheel->AttachToComponent(Spring, FAttachmentTransformRules::KeepRelativeTransform);
+    Axle = CreateDefaultSubobject<USphereComponent>(TEXT("Axle Sphere Component"));
+    Axle->SetupAttachment(SpringConstraint);
 
-    
-    //Spring->AttachToComponent(Mass, FAttachmentTransformRules::KeepRelativeTransform);
-    //Spring->
+    AxleWheelConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("Axle Wheel Component"));
+    AxleWheelConstraint->SetupAttachment(Axle);
 
-   
+    Wheel2 = CreateDefaultSubobject<USphereComponent>(TEXT("Wheel Sphere Component"));
+    Wheel2->SetupAttachment(Axle);
 
 }
 
@@ -43,7 +44,8 @@ void ASprungWheel::BeginPlay()
         return;
     }
 
-    Spring->SetConstrainedComponents(BodyRoot, NAME_None, Wheel, NAME_None);
+    SpringConstraint->SetConstrainedComponents(BodyRoot, NAME_None, Axle, NAME_None);
+    AxleWheelConstraint->SetConstrainedComponents(Axle, NAME_None, Wheel2, NAME_None);
 }
 
 // Called every frame
