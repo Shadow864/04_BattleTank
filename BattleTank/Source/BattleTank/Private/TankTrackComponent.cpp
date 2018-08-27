@@ -4,47 +4,55 @@
 #include <Components/ActorComponent.h>
 #include <Components/PrimitiveComponent.h>
 #include <DrawDebugHelpers.h>
+#include "SprungWheel.h"
+#include "SpawnActorComponent.h"
 
 
 UTankTrackComponent::UTankTrackComponent()
 {
     PrimaryComponentTick.bCanEverTick = false;
-    OnComponentHit.AddDynamic(this, &UTankTrackComponent::OnHit);
-}
-
-void UTankTrackComponent::ApplySidewayForce()
-{
-    float DeltaTime = GetWorld()->GetDeltaSeconds();
-    auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
-
-    float SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
-
-    FVector CorectionAccelertion = (-SlippageSpeed / DeltaTime) * GetRightVector();
-
-    // F = m * a (but we have two tracks thats why divede by 2)
-    FVector CorectionForce = CorectionAccelertion * TankRoot->GetMass() * 0.5f;
-
-    TankRoot->AddForce(CorectionForce);
 }
 
 void UTankTrackComponent::SetThrottle(float Throttle)
 {
-    CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -2.f, 2.f);
+    DriveTrack(Throttle);
 }
 
-void UTankTrackComponent::DriveTrack()
+void UTankTrackComponent::DriveTrack(float CurrentThrottle)
 {
-    auto ForceLocation = GetComponentLocation();
-    auto Force = GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce;
-    auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+    TArray<ASprungWheel*> Wheels = GetWheels();
 
-    TankRoot->AddForceAtLocation(Force, ForceLocation);
+
+    float Force = TrackMaxDrivingForce * CurrentThrottle / Wheels.Num();
+  
+    for (ASprungWheel* Wheel : GetWheels())
+    {
+        Wheel->AddDriveForce(Force);
+    }
 }
 
-void UTankTrackComponent::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+
+TArray<class ASprungWheel*> UTankTrackComponent::GetWheels() const
 {
-    DriveTrack();
-    ApplySidewayForce();
-    CurrentThrottle = 0.f;
+    TArray<ASprungWheel*> Wheels;
+    TArray<USceneComponent*> Childrens;
+    GetChildrenComponents(true, Childrens);
+
+    for (USceneComponent* Child : Childrens)
+    {
+        USpawnActorComponent* Spawner = Cast<USpawnActorComponent>(Child);
+        if (!Spawner)
+            continue;
+
+        AActor* SpawnedActor = Spawner->GetSpawnedActor();
+       
+        ASprungWheel* Wheel = Cast<ASprungWheel>(SpawnedActor);
+        if (!Wheel)
+            continue;
+
+        Wheels.Add(Wheel);
+    }
+
+    return Wheels;
 
 }

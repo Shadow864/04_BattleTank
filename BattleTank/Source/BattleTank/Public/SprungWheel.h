@@ -27,6 +27,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+    void AddDriveForce(float Force);
+
 public:
     UPROPERTY(VisibleAnywhere, Category = "Components")
      USphereComponent* Axle = nullptr;
