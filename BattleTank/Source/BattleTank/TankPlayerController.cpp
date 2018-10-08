@@ -10,6 +10,8 @@ void ATankPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
+    PrimaryActorTick.bCanEverTick = true;
+
     UTankAimingComponent* AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
     ensure(AimingComponent);
     OnAimingComponentAdded(AimingComponent);
@@ -24,6 +26,8 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
+
+  //  DrawDebugLine
     if (!GetPawn())
         return;
 
